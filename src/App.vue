@@ -1,0 +1,26 @@
+<template>
+  <div id="app">
+    <!--<img src="./assets/logo.png">-->
+    <router-view/>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+<!--<style lang="scss">-->
+  <!--@import "./style/style";    &lt;!&ndash;在这里我们直接导入主样式文件&ndash;&gt;-->
+<!--</style>-->
