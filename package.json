@@ -12,6 +12,19 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@hasaki-ui/hsk-camille": "^1.0.2",
+    "@hasaki-ui/hsk-corki": "^1.0.8",
+    "@hasaki-ui/hsk-janna": "^1.0.4",
+    "@hasaki-ui/hsk-jinx": "^1.0.36",
+    "@hasaki-ui/hsk-nocturne": "^1.0.12",
+    "@hasaki-ui/hsk-shaco": "^1.0.1",
+    "@hasaki-ui/hsk-sona": "^1.0.22",
+    "@hasaki-ui/hsk-teemo": "^1.0.18",
+    "animejs": "^2.2.0",
+    "async-validate": "^1.0.1",
+    "autoprefixer": "^7.1.6",
+    "axios": "^0.17.1",
+
     "echarts": "^4.0.4",
     "element-ui": "^2.2.2",
     "lodash": "^4.17.5",

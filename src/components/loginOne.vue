@@ -19,6 +19,7 @@
 <script>
   import Fetch from '../api/index'
   import Exception from '../common/lib/exception'
+  import DeepClone from '../common/lib/deepClone'
   export default {
     data() {
       return {
@@ -76,11 +77,38 @@
           let result = await fetch.get('/api/user/login', {params:loginParams})
           let user = result.data.data
           //let user = await fetch.get('/api/user/login?name='+this.account.name+'&password='+this.account.password)
-          console.log('aaaa',user);
           if(result && user && user.id){
             this.$message({message:'登录成功，页面跳转中...',type:'success',center: true})
-            //localStorage.setItem('user')
+            console.log("uu",user)
             sessionStorage.setItem('user',JSON.stringify(user))
+            let roles = user.roles||[];
+            var roleIs = 0;
+            roles.forEach(role=>{
+              if(role.roleName == '管理员'){
+                roleIs = 2;
+              }
+            })
+            console.log("roleIs",roleIs);
+            console.log('router',this.$router.options.routes)
+            if(roleIs == 2){
+              (this.$router.options.routes||[]).forEach(router=>{
+                if(router.name == '设置'){
+                  router.menuShow=true;
+                }
+                if(router.name == '管理'){
+                  router.menuShow=true;
+                }
+              })
+            }else{
+              (this.$router.options.routes||[]).forEach(router=>{
+                if(router.name == '设置'){
+                  router.menuShow=true;
+                }
+              })
+            }
+            console.log('rrouter',this.$router.options.routes)
+            let rout = DeepClone.deepClone(this.$router.options.routes);
+            sessionStorage.setItem('router',JSON.stringify(rout));
             this.$router.push('/');
           }else{
             this.$message.error("登录失败，请检查用户名和密码");

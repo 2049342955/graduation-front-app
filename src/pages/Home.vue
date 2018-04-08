@@ -11,12 +11,12 @@
       <div class="topbar-title">
         <span style="font-size: 18px;color: #fff;">微社团</span>
       </div>
-      <div class="topbar-account" v-if="!name">
+      <div class="topbar-account" v-if="name==''">
         <div @click="jumpTo('/Login')" style="font-size: 18px;color: #fff;"><span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i></span>登录</div>
       </div>
-      <div class="topbar-account topbar-btn">
+      <div class="topbar-account topbar-btn" v-else>
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i> {{nickname ? nickname:name}}  <i
+          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i> {{nickName ? nickName:name}}  <i
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
@@ -60,11 +60,18 @@
 
       <!--右侧内容区-->
       <section class="content-container">
-        <div class="grid-content bg-purple-light">
+        <div class="grid-content bg-purple-light" style="margin-bottom: 60px">
           <el-col :span="24" class="content-wrapper">
-            <transition name="fade" mode="out-in">
-              <router-view></router-view>
-            </transition>
+            <!--<transition-group name="fade" mode="out-in">-->
+              <!--&lt;!&ndash;<router-view></router-view>&ndash;&gt;-->
+              <!--<dash-board></dash-board>-->
+              <!--<myBody></myBody>-->
+            <!--</transition-group>-->
+            <!--<dash-board></dash-board>-->
+            <!--<myBody></myBody>-->
+            <!--<my-body-middle></my-body-middle>-->
+            <!--<my-body-bottom></my-body-bottom>-->
+            <router-view></router-view>
           </el-col>
         </div>
       </section>
@@ -74,27 +81,20 @@
 </template>
 
 <script>
-
-
+//  import DashBoard from './Dashboard.vue'
+//  import myBody from './body-top.vue'
+//  import myBodyMiddle from './body-middle.vue'
+//  import myBodyBottom from './body-bottom.vue'
+import Fetch from '../api/index'
+import MAIN from './main.vue'
   export default {
     name: 'home',
-//    created(){
-//      bus.$on('setNickName', (text) => {
-//        this.nickname = text;
-//      })
-//
-//      bus.$on('goto', (url) => {
-//        if (url === "/login") {
-//          localStorage.removeItem('access-user');
-//        }
-//        this.$router.push(url);
-//      })
-//    },
+    components:{MAIN},
     data () {
       return {
         name:'',
         defaultActiveIndex: "0",
-        nickname: '',
+        nickName: '',
         collapsed: false,
       }
     },
@@ -111,44 +111,83 @@
         this.$router.push(url); //用go刷新
       },
       logout(){
-        let that = this;
-        this.$confirm('确认退出吗?', '提示', {
-          confirmButtonClass: 'el-button--warning'
+        this.$confirm('是否退出?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         }).then(() => {
-          //确认
-          that.loading = true;
-          API.logout().then(function (result) {
-            that.loading = false;
-            localStorage.removeItem('access-user');
-            that.$router.go('/login'); //用go刷新
-          }, function (err) {
-            that.loading = false;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-          }).catch(function (error) {
-            that.loading = false;
-            console.log(error);
-            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          this.$message({
+            type: 'success',
+            message: '退出成功!'
           });
-        }).catch(() => {});
-      }
+          sessionStorage.removeItem('router');
+          sessionStorage.removeItem('user')
+          this.$router.push('/login');
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '亲，发生了小错误'
+          });
+        });
+      },
+
+      open(title) {
+        this.instance = this.$notify({
+          title: '提示',
+          message: title,
+          showClose: false
+        });
+      },
+      close(temp){
+        temp.status='1';
+        console.log('tempclose',temp)
+        let fetch = Fetch.getFetch();
+        let result = fetch.post('/api/message/save',temp);
+      },
+
+      closeAll(){
+        this.messages=[]
+        sessionStorage.setItem('message',JSON.stringify(this.messages));
+      },
+
+      async loadMessage(){
+        console.log("messjinlai",this.user.id)
+        let fetch = Fetch.getFetch();
+        let result = await fetch.get('/api/message/getByName',{params:{userId:this.user.id}});
+        let temp = result.data.data;
+        console.log("temp",temp)
+        if(result && temp && temp.length>0){
+          this.messages=temp;
+          (temp||[]).forEach(temp=>{
+            this.open(temp.message)
+          })
+        }
+        this.closeAll();
+      },
     },
     created(){
       let user = sessionStorage.getItem('user');
+      let message = sessionStorage.getItem('message');
       if (user) {
         user = JSON.parse(user);
-        this.nickname = user.nickname || '';
+        this.user= user;
+        this.nickName = user.nickName || '';
         this.name = user.name;
+        if(!message){
+          this.loadMessage();
+        }
         console.log('name',this.name);
       }
-      console.log("uuu",user)
+      let rout = JSON.parse(sessionStorage.getItem('router'));
+      if(rout && rout.length>0){
+        console.log('rr',rout)
+        this.$router.options.routes = rout;
+      }
+
+
+
     },
     mounted() {
-//      let user = sessionStorage.getItem('user');
-//      if (user) {
-//        user = JSON.parse(user);
-//        this.nickname = user.nickname || '';
-//        this.name = name;
-//      }
     }
   }
 </script>

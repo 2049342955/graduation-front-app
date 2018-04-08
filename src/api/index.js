@@ -91,9 +91,16 @@
 var root ='/api/'
 import Axios from 'axios';
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-let timeout = 1000
+let timeout = 1000*20
 const Fetch ={}
 Fetch.getFetch = ()=>{
+  // let user = sessionStorage.getItem('user');
+  // if (user) {
+  //   user = JSON.parse(user);
+  // }
+  // if(!user){
+  //   user ='';
+  // }
   const fetch = Axios.create({baseURL:root, timeout:timeout});
   fetch.interceptors.request.use(function(config){return config},function(error){return Promise.reject(error);})
   fetch.interceptors.response.use(function(response){return response;},function(error){return Promise.reject(error);});

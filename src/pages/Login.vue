@@ -1,5 +1,5 @@
 <template>
-  <!--<div :style="{backgroundImage: 'url(../images/bk.jpg)'}">-->
+  <!--<div :style="{backgroundImage: 'url(../assets/images/bk.jpg)'}">-->
   <el-form  label-position="left" label-width="0px"
            class="demo-ruleForm login-container" >
     <div>
@@ -47,16 +47,6 @@
           username: '',
           pwd: ''
         },
-//        rules: {
-//          username: [
-//            {required: true, message: '请输入账号', trigger: 'blur'},
-//            //{ validator: validaePass }
-//          ],
-//          pwd: [
-//            {required: true, message: '请输入密码', trigger: 'blur'},
-//            //{ validator: validaePass2 }
-//          ]
-//        },
         checked: true,
         activeName:''
       };
@@ -70,7 +60,9 @@
 </script>
 <style>
   body {
-    background: #DFE9FB;
+    background: url(../assets/images/bk.jpg);
+    background-size: cover;
+
   }
 </style>
 <style lang="scss" scoped>
@@ -106,5 +98,6 @@
     width: 960px;
     margin-left: auto;
     margin-right: auto;
+    background-size: cover;
   }
 </style>
